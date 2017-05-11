@@ -37,7 +37,7 @@ public:
 
 	void setPovar(const char* povar_name = nullptr, const char* povar_secName = nullptr);
 
-	void show();
+	virtual void show();
 
 	Dish operator++();
 	Dish operator++(int);
