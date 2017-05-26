@@ -13,15 +13,25 @@ using namespace std;
 
 int main() {
 
-	Price* price1 = new Price;
+	Price<ReadyDish>* price1 = new Price<ReadyDish>;
 	
-for(int i = 0; i <3; i++){
-	ReadyDish dish("hello", i, i, "pov", "pov", i);
+for(int i = 0; i <5; i++){
+	ReadyDish dish("hello", i, i, "pov", "pov", 1);
+	dish.setPresent(true);
 	price1->push_back(dish);
 }
 
+Price<ReadyDish>::iterator it(price1->begin());
 
-for(int i = 0 ; i< price1->length();i++)
+it++;
+it++;
+
+ReadyDish dish("heADSADAllo", 5, 5, "pov", "pov", 1);
+dish.setPresent(true);
+
+price1->insert(it, dish);
+
+for(int i = 0 ; i< price1->size();i++)
 	(*price1)[i].show();
 
 

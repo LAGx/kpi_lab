@@ -43,6 +43,8 @@ public:
 	Dish operator++(int);
 	void operator=(const Dish& dish);
 	Dish operator+(const Dish& dish);
+	bool operator>(const Dish& dish)const;//by price
+	bool operator<(const Dish& dish)const;//by price
 
 	friend std::ostream& operator<<(std::ostream& stream, const Dish& dish);
 	friend std::istream& operator>>(std::istream& stream, Dish& dish);
@@ -77,6 +79,7 @@ public:
 
 	bool operator<(const ReadyDish& d);
 	bool operator>(const ReadyDish& d);  
+	void  operator=(const ReadyDish& d);  
 
 	void show();
 
@@ -99,6 +102,10 @@ public:
 	void setTimeToSave(DateForDish TimeToSave);
 
 	void show();
+
+	bool operator>(const PrepackDish& dish)const;//by price
+	bool operator<(const PrepackDish& dish)const;//by price
+	void  operator=(const PrepackDish& d);  
 
 	~PrepackDish();
 

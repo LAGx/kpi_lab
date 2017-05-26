@@ -200,7 +200,10 @@ Dish Dish::operator++(int){
 	return Dish("None", price++,0, "None", "None");
 }
 void Dish::operator=(const Dish& dish){
+	setName(dish.name);
 	setPrice(dish.price);
+	setMass(dish.mass);
+	setPovar(dish.povar);
 }
 Dish Dish::operator+(const Dish& dish){
 	return Dish("None", price+dish.price ,0, "None", "None");
@@ -226,6 +229,13 @@ istream& operator>>(istream& stream, Dish& dish){
 	return stream;
 }
 
+
+bool Dish::operator>(const Dish& dish)const{
+	return price > dish.price;
+}
+bool Dish::operator<(const Dish& dish)const{
+	return price < dish.price;
+}
 
 
 
@@ -273,6 +283,15 @@ bool ReadyDish::operator<(const ReadyDish& d){
 }
 bool ReadyDish::operator>(const ReadyDish& d){
 	return timeToReady.minutes > d.timeToReady.minutes;
+}
+
+void  ReadyDish::operator=(const ReadyDish& d){
+	isPresent = d.isPresent;
+	timeToReady = d.timeToReady;
+	setName(d.name);
+	setPrice(d.price);
+	setMass(d.mass);
+	setPovar(d.povar);
 }
 
 ReadyDish::~ReadyDish() {
@@ -329,6 +348,22 @@ void PrepackDish::show() {
 
 PrepackDish::~PrepackDish() {
 	delete[] this->howToSave;
+}
+
+bool PrepackDish::operator>(const PrepackDish& dish)const{
+	return price > dish.price;
+}
+bool PrepackDish::operator<(const PrepackDish& dish)const{
+	return price < dish.price;
+}
+
+void PrepackDish::operator=(const PrepackDish& d){
+	setHowToSave(d.howToSave);
+	timeToSave = d.timeToSave;
+	setName(d.name);
+	setPrice(d.price);
+	setMass(d.mass);
+	setPovar(d.povar);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
