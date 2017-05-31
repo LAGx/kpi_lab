@@ -23,8 +23,8 @@ public:
 	Price()
 	{};
 
-	Price(Price<T>& pr){
-	//	*this = pr;
+	Price(Price<T>& pr){//need TEST
+		*this = pr;
 	};
 
 
@@ -37,7 +37,7 @@ public:
 	T* operator[](int i){
 		return arr[i];
 	}
-	void operator=(Price<T> &price){
+	void operator=(Price<T> &price){//need TEST
 		delete [] price.arr;
 		price.arr = new T*[size()];
 		price.len = size();
@@ -50,7 +50,7 @@ public:
 	iterator begin() {return iterator(arr); };
 	iterator end(){return iterator(arr+len); };
 
-	~Price(){
+	~Price(){//need TEST
 		if(arr != nullptr){
 			for(int i = 0;i < size();i++)
 				delete arr[i];
