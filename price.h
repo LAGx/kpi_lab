@@ -1,176 +1,129 @@
 #ifndef PRICE
 #define PRICE
 #include "config.h"
-#include "dish.h"
-
 #ifdef OS_WIN
 #pragma once
 #endif
-
+#include <iostream>
+#include <cstddef>
 using namespace std;
 
 template<class T>
 class Price{
 private:
 
-	bool activeList = 1;
-	T** dishList[2] = {nullptr, nullptr};
+	T** arr = nullptr;
 
+	size_t len = 0;
 
-	int len = 0;
 
 public:
 	class iterator;
 
-	int size();
+	Price()
+	{};
 
-	Price(){
-	}
+	Price(Price<T>& pr){
+	//	*this = pr;
+	};
 
-	Price(Price<T> &price){
-		*this = price;
-	}
 
 	void insert(iterator i, T& el);
-
-	void erase(int index);
-	void push_back(T &dish);
+	void push_back(T &el);
+	size_t size(){
+		return len;
+	}
 	
-	T& operator[](int i);
-	void  operator=(Price<T> &price);
+	T* operator[](int i){
+		return arr[i];
+	}
+	void operator=(Price<T> &price){
+		delete [] price.arr;
+		price.arr = new T*[size()];
+		price.len = size();
 
-	iterator begin() {return iterator(dishList[activeList]); };
-	iterator end(){return iterator(dishList[activeList]+len); };
-	
-	~Price(){
-		for(int i = 0;i<len;i++)
-		delete dishList[activeList][i];
-		if(dishList[activeList] != nullptr)
-		delete [] dishList[activeList];
+		for(int i = 0;i < size();i++){
+			price.arr[i] = new T(*arr[i]);
+		} 
 	}
 
+	iterator begin() {return iterator(arr); };
+	iterator end(){return iterator(arr+len); };
+
+	~Price(){
+		if(arr != nullptr){
+			for(int i = 0;i < size();i++)
+				delete arr[i];
+			delete [] arr;
+		}
+	}
+
+
 	class iterator{
+	private:
 		T** curr;
-
 	public:
+		iterator(T** begin = nullptr): curr(begin)
+		{}
 
-		iterator(T** begin = nullptr): curr(begin){
-		}
+		iterator(const Price<T>::iterator& begin):curr(begin.curr)
+		{}
 
-		iterator(const Price<T>::iterator& begin):curr(begin.curr){
-		}
-
-		T** operator+(int n){ return curr+n;}
+		T* operator+(int n){ return *(curr+n);}
 
 		T* operator++(int){return *(curr++);}
 		T* operator--(int){return *(curr--); }
 		T* operator++(){return *(++curr);}
 		T* operator--(){return *(--curr);}
 
-		bool operator=(const iterator& it){return curr = it.curr; }
+		void operator=(const iterator& it){curr = it.curr; }
 
 		bool operator!=(const iterator& it){return curr != it.curr; }
 		bool operator==(const iterator& it){return curr == it.curr; }
 
-		T* operator*(){return *curr;}
+		T& operator*(){return **curr;}
+
 	};
 
 };
 
-
 template<class T>
-void Price<T>::insert(iterator it, T& el){
+void Price<T>::insert(iterator i, T& el){
 
-               iterator end_original(it);
-	dishList[!activeList] = new T*[this->size()];
+	int normal_pos = 0;
+	for(iterator tempi = begin();tempi != i; tempi++, normal_pos++);
 
-	int i = 0;
-	for(i = 0;end_original != this->end();end_original++, i++){
-		dishList[!activeList][i] = new T(*(*end_original));
+	T** temp = new T*[size()];
+	for(int i = 0;i < size();i++){
+		temp[i] = new T(*arr[i]);
+		delete arr[i];
 	}
+	delete [] arr;
 
-
-	delete *it;
-	T* temp = *it;
-	temp = new T(el); 
-
-	push_back(el);
-int a = 0;
-	for(it++;it != this->end(); it++, a++)
-		*(*it) = *dishList[!activeList][a];
-	
-
-
-	for(;i >= 0;i-- )
-		delete dishList[!activeList][i];
-
-   	delete  [] dishList[!activeList];
-
-	len++;	
-
-}
-
-
-template<class T>
-int Price<T>::size(){
-	return len;
-}
-
-
-template<class T>
-void Price<T>::erase(int index){
-
-	if(index >= len)
-		throw out_of_range("Price[] : index is out of range");
-
-	dishList[!activeList] = new T*[len-1];
-	int plus = 0;
-	for(int i = 0;i<len-1;i++){
-		if(i == index)
-			plus = 1;
-		dishList[!activeList][i] = new T(*dishList[activeList][i+plus]);
-		delete dishList[activeList][i];
-	}
-
-	if(dishList[activeList] != nullptr)
-		delete [] dishList[activeList];
-
-	activeList = !activeList;
-	len -= 1;
-}
-
-template<class T>
-void Price<T>::push_back(T &dish){
 	len++;
+	this->arr = new T*[size()];
 
-	dishList[!activeList] = new T*[len];
-
-	for(int i = 0;i<len-1;i++){
-		dishList[!activeList][i] = new T(*dishList[activeList][i]);
-		delete dishList[activeList][i];
+	for(int i = 0;i < size() ;i++){
+		if(i < normal_pos){
+			arr[i] = new T(*temp[i]);
+			delete temp[i];
+		}
+		else if(i == normal_pos){
+			arr[i] = new T(el);
+		}
+		else if(i > normal_pos){
+			arr[i] = new T(*temp[i-1]);
+			delete temp[i-1];
+		}
 	}
 
-	dishList[!activeList][len-1] = new T(dish);
-
-	if(dishList[activeList] != nullptr)
-		delete [] dishList[activeList];
-
-	activeList = !activeList;
-}
-
-template<class T>	
-T& Price<T>::operator[](int index){
-	if(index >= len)
-		throw out_of_range("Price[] : index is out of range");
-	return *dishList[activeList][index];
+	delete [] temp;
 }
 
 template<class T>
-void  Price<T>::operator=(Price &price){
-	for(int i = 0;i < price.length();i++){
-		this->push_back(price[i]);
-		this->len = price.len;
-	}
+void Price<T>::push_back(T &el){
+	insert(this->end(), el);
 }
+
 
 #endif

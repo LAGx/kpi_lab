@@ -10,33 +10,54 @@
 
 using namespace std;
 
+//LABA 5
+template<class Cont, class Elem>
+void  insertSort(Cont& con, Elem el, char mode){
+	if(con.size() == 0){
+		con.insert(con.begin(),el);
+	}else{
+		if(mode == '<'){
+			typename Cont::iterator i ;
+			for( i = con.begin(); i != con.end(); ++i){
+				if(*i > el && el < *i){
+					con.insert(i, el);
+					return;
+				}
+			}
+		con.push_back(el);
+		}else if(mode == '>'){
+			typename Cont::iterator i ;
+			for( i = con.begin(); i != con.end(); ++i){
+				if(*i < el && el > *i){
+					con.insert(i, el);
+					return;
+				}
+			}
+		con.push_back(el);
+		}else{
+			throw  "invalid mode" ;
+		}
+	}
+}
+/////////
 
 int main() {
 
-	Price<ReadyDish>* price1 = new Price<ReadyDish>;
-	
-for(int i = 0; i <5; i++){
-	ReadyDish dish("hello", i, i, "pov", "pov", 1);
-	dish.setPresent(true);
-	price1->push_back(dish);
+	Price<Dish> d;
+
+for(int i = 10;i > 0; i -= 2){
+	Dish dish2("None", i, i, "None", "None");
+	d.insert(d.end(), dish2);
 }
 
-Price<ReadyDish>::iterator it(price1->begin());
+/////LABA5
+Dish el("INSERT", 3, 3, "INSERT", "Ivanov");
+insertSort(d, el, '>');
+//////
 
-it++;
-it++;
+for(int i = 0;i < 6; i++)
+	d[i]->show();
 
-ReadyDish dish("heADSADAllo", 5, 5, "pov", "pov", 1);
-dish.setPresent(true);
-
-price1->insert(it, dish);
-
-for(int i = 0 ; i< price1->size();i++)
-	(*price1)[i].show();
-
-
-
-delete price1;
 
 	
 #ifdef OS_WIN
